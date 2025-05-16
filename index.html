@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Spanish Vocabulary Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 40px;
+    }
+    input, button {
+      padding: 8px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    #result {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+    #missed-list {
+      margin-top: 40px;
+      text-align: left;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Spanish Vocabulary Quiz</h1>
+  <p><strong>Translate this into English:</strong></p>
+  <h2 id="spanish-word"></h2>
+
+  <input type="text" id="user-input" placeholder="Type your answer">
+  <br>
+  <button onclick="checkAnswer()">Submit</button>
+  <button onclick="showAnswer()">Show Answer</button>
+
+  <div id="result"></div>
+
+  <div id="missed-list">
+    <h3>❌ Missed Words:</h3>
+    <ul id="missed-words-ul"></ul>
+  </div>
+
+  <script>
+    const vocab = [
+      { spanish: "el canal", english: "channel" },
+      { spanish: "el programa de concursos", english: "game show" },
+      { spanish: "el programa deportivo", english: "sports show" },
+      { spanish: "el programa de dibujos animados", english: "cartoon show" },
+      { spanish: "el programa de entrevistas", english: "interview program" },
+      { spanish: "el programa de la vida real", english: "reality program" },
+      { spanish: "el programa de noticias", english: "news program" },
+      { spanish: "el programa educativo", english: "educational program" },
+      { spanish: "el programa musical", english: "musical program" },
+      { spanish: "la telenovela", english: "soap opera" },
+      { spanish: "la comedia", english: "comedy" },
+      { spanish: "el drama", english: "drama" },
+      { spanish: "la película de ciencia ficción", english: "science fiction movie" },
+      { spanish: "la película de horror", english: "horror movie" },
+      { spanish: "la película policíaca", english: "crime movie" },
+      { spanish: "la película romántica", english: "romantic movie" },
+      { spanish: "el actor", english: "actor" },
+      { spanish: "la actriz", english: "actress" },
+      { spanish: "dar", english: "to show" },
+      { spanish: "durar", english: "to last" },
+      { spanish: "empezar", english: "to begin" },
+      { spanish: "terminar", english: "to end" },
+      { spanish: "más / menos de", english: "more / less than" },
+      { spanish: "medio", english: "half" },
+      { spanish: "¿Qué clase de...?", english: "What kind of...?" },
+      { spanish: "acabar de", english: "to have just" },
+      { spanish: "antes de", english: "before" },
+      { spanish: "casi", english: "almost" },
+      { spanish: "¿De veras?", english: "Really?" },
+      { spanish: "especialmente", english: "especially" },
+      { spanish: "por eso", english: "therefore" },
+      { spanish: "sobre", english: "about" },
+      { spanish: "ya", english: "already" },
+      { spanish: "cómico", english: "funny" },
+      { spanish: "emocionante", english: "exciting" },
+      { spanish: "fascinante", english: "fascinating" },
+      { spanish: "infantil", english: "childish" },
+      { spanish: "realista", english: "realistic" },
+      { spanish: "tonto", english: "silly" },
+      { spanish: "violento", english: "violent" },
+      { spanish: "me aburre", english: "it bores me" },
+      { spanish: "me interesa", english: "it interests me" },
+      { spanish: "cara a cara", english: "face-to-face" },
+      { spanish: "la carta", english: "letter" },
+      { spanish: "comunicarse", english: "to communicate" },
+      { spanish: "enviar", english: "to send" },
+      { spanish: "la tarjeta", english: "card" },
+      { spanish: "bajar", english: "to download" },
+      { spanish: "buscar", english: "to search" },
+      { spanish: "la cámara digital", english: "digital camera" },
+      { spanish: "la canción", english: "song" },
+      { spanish: "la composición", english: "composition" },
+      { spanish: "la computadora portátil", english: "laptop computer" },
+      { spanish: "crear", english: "to create" },
+      { spanish: "el curso", english: "course" },
+      { spanish: "tomar un curso", english: "to take a course" },
+      { spanish: "la diapositiva", english: "slide" },
+      { spanish: "la dirección electrónica", english: "e-mail address" },
+      { spanish: "el documento", english: "document" },
+      { spanish: "escribir por correo electrónico", english: "to send an e-mail message" },
+      { spanish: "estar en línea", english: "to be online" },
+      { spanish: "grabar un disco compacto", english: "to burn a CD" },
+      { spanish: "los gráficos", english: "graphics" },
+      { spanish: "la información", english: "information" },
+      { spanish: "el informe", english: "report" },
+      { spanish: "el laboratorio", english: "laboratory" },
+      { spanish: "navegar en la Red", english: "to surf the Web" },
+      { spanish: "la página Web", english: "Web page" },
+      { spanish: "la presentación", english: "presentation" },
+      { spanish: "el sitio Web", english: "Web site" },
+      { spanish: "visitar salones de chat", english: "to visit chat rooms" },
+      { spanish: "complicado", english: "complicated" },
+      { spanish: "¿Para qué sirve?", english: "What’s it used for?" },
+      { spanish: "¿Qué te parece?", english: "What do you think?" },
+      { spanish: "rápidamente", english: "quickly" },
+      { spanish: "Sirve para", english: "It’s used for" },
+      { spanish: "tener miedo", english: "to be afraid" }
+    ];
+
+    let current;
+    let missedWords = [];
+
+    function pickRandomWord() {
+      current = vocab[Math.floor(Math.random() * vocab.length)];
+      document.getElementById("spanish-word").textContent = current.spanish;
+      document.getElementById("user-input").value = "";
+      document.getElementById("result").textContent = "";
+    }
+
+    function checkAnswer() {
+      const userAnswer = document.getElementById("user-input").value.trim().toLowerCase();
+      if (userAnswer === current.english.toLowerCase()) {
+        document.getElementById("result").textContent = "✅ Correct!";
+        setTimeout(pickRandomWord, 1000);
+      } else {
+        document.getElementById("result").textContent = "❌ Try again.";
+      }
+    }
+
+    function showAnswer() {
+      document.getElementById("result").textContent = `💡 Answer: ${current.english}`;
+
+      if (!missedWords.includes(current.spanish)) {
+        missedWords.push(current.spanish);
+        const li = document.createElement("li");
+        li.textContent = `${current.spanish} = ${current.english}`;
+        document.getElementById("missed-words-ul").appendChild(li);
+      }
+    }
+
+    // Start the quiz
+    pickRandomWord();
+  </script>
+
+</body>
+</html>
