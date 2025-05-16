@@ -157,8 +157,21 @@
       }
     }
 
+     function checkAnswer() {
+  const userAnswer = document.getElementById("user-input").value.trim().toLowerCase();
+  const correctAnswer = current.english.trim().toLowerCase();
+  if (userAnswer === correctAnswer) {
+    document.getElementById("result").textContent = "✅ Correct!";
+    setTimeout(pickRandomWord, 1000);
+  } else {
+    document.getElementById("result").textContent = "❌ Try again.";
+  }
+}
+
     // Start the quiz
     pickRandomWord();
+    
+   
   </script>
 
 </body>
